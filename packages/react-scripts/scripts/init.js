@@ -41,6 +41,7 @@ module.exports = function(
     build: 'react-scripts build',
     test: 'react-scripts test --env=jsdom',
     eject: 'react-scripts eject',
+    lint: 'react-scripts lint',
   };
 
   fs.writeFileSync(
