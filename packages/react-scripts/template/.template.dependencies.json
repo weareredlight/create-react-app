@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "react": "",
+    "react-dom": "",
+    "redux": "",
+    "history": "",
+    "immutability-helper": "",
+    "prop-types": "",
+    "react-redux": "",
+    "react-router": "",
+    "react-router-redux": "next",
+    "recompose": "",
+    "redux-mock-store": "",
+    "redux-persist": "",
+    "redux-promise": ""
+  }
+}
+    

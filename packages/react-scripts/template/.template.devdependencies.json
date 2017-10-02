@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "chai": "",
+    "enzyme": "",
+    "enzyme-adapter-react-16": "",
+    "enzyme-to-json": "",
+    "react-test-renderer": ""
+  }
+}
+  

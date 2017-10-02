@@ -90,46 +90,87 @@ module.exports = function(
     }
   );
 
-  let command;
-  let args;
+  {
+    let command;
+    let args;
 
-  if (useYarn) {
-    command = 'yarnpkg';
-    args = ['add'];
-  } else {
-    command = 'npm';
-    args = ['install', '--save', verbose && '--verbose'].filter(e => e);
-  }
-  args.push('react', 'react-dom');
-
-  // Install additional template dependencies, if present
-  const templateDependenciesPath = path.join(
-    appPath,
-    '.template.dependencies.json'
-  );
-  if (fs.existsSync(templateDependenciesPath)) {
-    const templateDependencies = require(templateDependenciesPath).dependencies;
-    args = args.concat(
-      Object.keys(templateDependencies).map(key => {
-        return `${key}@${templateDependencies[key]}`;
-      })
+    if (useYarn) {
+      command = 'yarnpkg';
+      args = ['add'];
+    } else {
+      command = 'npm';
+      args = ['install', '--save', verbose && '--verbose'].filter(e => e);
+    }
+    // Install additional template dependencies, if 
+    const templateDependenciesPath = path.join(
+      appPath,
+      '.template.dependencies.json'
     );
-    fs.unlinkSync(templateDependenciesPath);
-  }
 
-  // Install react and react-dom for backward compatibility with old CRA cli
-  // which doesn't install react and react-dom along with react-scripts
-  // or template is presetend (via --internal-testing-template)
-  if (!isReactInstalled(appPackage) || template) {
-    console.log(`Installing react and react-dom using ${command}...`);
-    console.log();
+    if (fs.existsSync(templateDependenciesPath)) {
+      const templateDependencies = require(templateDependenciesPath).dependencies;
+      
+      args = args.concat(
+        Object.keys(templateDependencies).map(key => {
+          return `${key}@${templateDependencies[key]}`;
+        })
+      );
+      
+      console.log();
+      console.log(`Installing template dependencies using ${command}...`);
+      console.log();
+          
+      const proc = spawn.sync(command, args, { stdio: 'inherit' });
+      if (proc.status !== 0) {
+        console.error(`\`${command} ${args.join(' ')}\` failed`);
+        return;
+      }
 
-    const proc = spawn.sync(command, args, { stdio: 'inherit' });
-    if (proc.status !== 0) {
-      console.error(`\`${command} ${args.join(' ')}\` failed`);
-      return;
+      fs.unlinkSync(templateDependenciesPath);
     }
   }
+
+  {
+    let command;
+    let args;
+
+    if (useYarn) {
+      command = 'yarnpkg';
+      args = ['add'];
+    } else {
+      command = 'npm';
+      args = ['install', '--save-dev', verbose && '--verbose'].filter(e => e);
+    }
+    // Install additional template dependencies, if 
+    const templateDependenciesPath = path.join(
+      appPath,
+      '.template.devdependencies.json'
+    );
+
+    if (fs.existsSync(templateDependenciesPath)) {
+      const templateDependencies = require(templateDependenciesPath).dependencies;
+      
+      args = args.concat(
+        Object.keys(templateDependencies).map(key => {
+          return `${key}@${templateDependencies[key]}`;
+        })
+      );
+      
+      if (useYarn) args.push('-D')
+      console.log();
+      console.log(`Installing template dev dependencies using ${command}...`);
+      console.log();
+          
+      const proc = spawn.sync(command, args, { stdio: 'inherit' });
+      if (proc.status !== 0) {
+        console.error(`\`${command} ${args.join(' ')}\` failed`);
+        return;
+      }
+
+      fs.unlinkSync(templateDependenciesPath);
+    }
+  }
+
 
   // Display the most elegant way to cd.
   // This needs to handle an undefined originalDirectory for
