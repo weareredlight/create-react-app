@@ -19,6 +19,10 @@ process.on('unhandledRejection', err => {
   throw err;
 });
 
+process.on('SIGTERM', function () {
+  process.exit(15);
+});
+
 // Ensure environment variables are read.
 require('../config/env');
 
