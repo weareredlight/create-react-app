@@ -228,7 +228,12 @@ module.exports = {
                         ],
                       },
                     },
-                    require.resolve('sass-loader'),
+                    {
+                      loader: require.resolve('sass-loader'),
+                      options: {
+                        includePaths: ["src"]
+                      }
+                    }
                   ],
                 },
                 extractTextPluginOptions
